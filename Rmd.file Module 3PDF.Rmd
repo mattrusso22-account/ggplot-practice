@@ -1,0 +1,101 @@
+---
+title: "Gapminder Dataset Experience and Apply Module 3 Assignment 2/15/21"
+author: "Matt Russo"
+date: "2/15/2021"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+
+```{r}
+library(gapminder)
+library(tidyverse)
+library(ggplot2)
+summary(gapminder)
+```
+***Question 1: Mapping Aesthics vs Setting them***
+Mapping an aesthetic is used to reflect and show the properties/variables of the dataset. To me this is where you can learn the most about the data and learn about the relationships within the data. Setting an aesthic is more the design aspect. Meaning how you want your graph to look, the shape, color etc .of all your datapoints. This is obviously important especially when dealing with different/multiple variables but I think most agree, you can draw the most insight from mapping aesthetics. To create an effective graph, it is important to make sure you incorporate both of these with the right balance. 
+
+
+***Question 2: geom_smooth before geom_point***
+When you put geom_smooth before geom_point you see that there are no data points and that there is a smooth curve line. This is because I set the method of geom_smooth to "loess" which is the loss function. Although there are no data points at this time, this can be useful for when drawing plots because you can start to convey some insight from this line before anything else. In my past experience in R, both geom_point and geom_smooth were a big help in learning the relationships between the variables. Once I add the geom_point code the graph will generate all of the data points for gdpPercap and lifeExp. 
+```{r}
+p <- ggplot(data=gapminder,
+            mapping = aes(x= gdpPercap, y=lifeExp))
+p+geom_smooth(method="loess")
+
+p <- ggplot(data=gapminder,
+            mapping = aes(x=gdpPercap,y=lifeExp))
+p+geom_point(color="purple")+geom_smooth(method="loess")
+```
+
+
+***Question 3: Graph showing life expentancy (lifeExp) vs population (pop)***
+After making the change to the x-axis and looking at the population against the life expectancy rather than the GDP per capita, we get a much different visual as expected. I know in the textbook it did not say to use log scales but I incorporated it because it gives us a better visual to learn about our data. The initial unit of of observation does not tell us much at all because there was fat too much clustering. The log scales helped minimize that impact. The geom_smooth in this graph (learning curve) has a much different shape than when we looked at the GDP per capita and life expectancy. Since there is a ton of data in this gapminder dataset, we see points scattered everywhere on our graph. You can see that there are some outliers which when a dataset is this big, it's not very surprising.
+```{r}
+p <- ggplot(data=gapminder,
+              mapping = aes(x= pop, y=lifeExp))
+p+geom_point(color="purple") +geom_smooth(method="loess")+scale_x_log10()
+```
+
+
+***Question 4: Alternate scale mapping***
+When using different scale mapping, there is a significant change in how the graph looks. I personally do not have much experience using scale mapping with scale reverse or square root. When I did incorporate these mappings to the code, I think it hurt the graph. To me it was harder to convey what actually was going on and the correlation between the GDP per capita and life expectancy variables. Although you see what happens when using reverse (self explanatory) to me it's just harder to look at and can cause some unnecessary confusion. The square root function gives us a more visually appealing graph when compared to using reverse mapping. I still believe there is too much clustering in the chart using square root and other techniques would be better to use. I am sure there are other situations with different datasets where both of these can come in handy and result in valuable insight but for this gapminder data, I think the log scale is the most effective when looking at x because using y did not give a meaningful visual. Playing around with these different mapping functions was a good exercise to see the overall impact to our dataset and being able to takeaway some further conclusions.
+```{r}
+p <- ggplot(data=gapminder,
+            mapping = aes(x= gdpPercap, y=lifeExp))
+p+geom_point(color="purple") +geom_smooth(method="loess")+scale_y_sqrt()
+
+p <- ggplot(data=gapminder,
+            mapping = aes(x= gdpPercap, y=lifeExp))
+p+geom_point(color="purple") +geom_smooth(method="loess")+scale_y_reverse()
+
+```
+
+
+***Question 5: color = year instead of continent***
+When you write your code and set color=continent, you get a pretty aestheically pleasing graph that helps you differentiate the data points. Obviously, this allows you to draw more insight and learn more about specific areas of the data and how they relate to one another. When you set color = year, the graph is definitely more difficult to look at. The shades of blue in this case makes it hard for the audience to look and make concrete insights. The attention to detail for each point is much higher compared to setting color = continent. Year is also an integer so a scatter plot is not the best type of visualization to use in my opinion. A bar chart would be much more effective. 
+```{r}
+p <- ggplot(data=gapminder,
+              mapping = aes(x= gdpPercap, y=lifeExp))
+p+geom_point(mapping = aes(color=year))+ geom_smooth(method="loess")+scale_x_log10()
+```
+p <- ggplot(data = gapminder,
+mapping = aes(x= gdpPercap, y = lifeExp)
+p+ geom_point(aes(color=factor(year)))+geom_smooth(method="loess))
+
+
+***Question 6: color=factor(year)***
+When I add the code for color = factor(year) I am getting a different perspective on our variables of GDP Per Capita and Life Expectancy. When you call the factor function it needs to be a vector of integers which are the years column in the dataset. This gives us a different way at learning and identifying certain trends and correlation the two variables have. 
+```{r}
+p <- ggplot(data=gapminder,
+            mapping = aes(x= gdpPercap, y=lifeExp))
+p+geom_point(mapping = aes(color=factor(year))) +geom_smooth(method="loess")+scale_x_log10()
+```
+  
+  
+***Question 7: Alternate visualization***
+This visualization incorporates more code that gives our visualization more meaning behind it. We have used the aes() function to call out color=continent. You can see in the legend on the right hand side of the scatterplot the color corresponding to each continent. Additionally we used log scales on the x-axis (gdpPercap) and used dollars as the label. This makes it easier for the audience to see GDP in $ value. You can draw insights quicker this way and was one of the main reasons why I chose to implement it in the code. 
+```{r}
+p <- ggplot(data=gapminder,mapping=aes(x=gdpPercap,y=lifeExp))
+p+geom_point(mapping =aes(color=continent,fill=continent))+geom_smooth(method="gam")+scale_x_log10(labels=scales::dollar)
+```
+
+
+***Question 8: Novel scatterplot***
+Below is another scatterplot looking at the two variables: Population (y-axis) and GDP Per Capita (x-axis). I incorporated some titles and subtitles to the visualization which you can see. The title is "Does Population Influence Economic Growth." I wanted to see if there was any correlation between the two variables. Additionally, the data points are set to color = continent. Each continent has it's own color and you can see which continent is what color in the legend on the right of the graph. I used log scaling on both the y and x axis. I think some more could be done to this visual though. It is difficult to say at this point if population influences economic growth. because the dataset is over several years and made up of many countries. Maybe if we took the averages of the GDP over X amount of years and countries would help us get a better understanding. However, at the same time this graph does show you the economic status of each continent. There are outliers but with a dataset with this capacity that is bound to happen. 
+```{r}
+p <- ggplot(data=gapminder,mapping=aes(x=gdpPercap,y=pop))
+p+geom_point(mapping=aes(color=continent,fill=continent))+geom_smooth(method="loess")+scale_y_log10()+scale_x_log10(labels=scales::dollar)+labs(x="GDP Per Capita", y = "Population", title = "Does Population Influence Economic Growth?", subtitle = "Data points for population are colored per their respective continent")
+```
+
